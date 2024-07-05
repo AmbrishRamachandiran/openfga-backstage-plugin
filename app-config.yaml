@@ -109,4 +109,4 @@ permission:
 
 openfga:
   baseUrl: http://localhost:8080  # Replace with your actual OpenFGA base URL
-  storeId: 01J1RXMM5H2H8RPMDCC3EWDWEZ  # Replace with your OpenFGA store ID
+  storeId: 01J20QE9WMGWRRD7FSKJ703JJD  # Replace with your OpenFGA store ID

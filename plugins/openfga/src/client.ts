@@ -1,14 +1,13 @@
 import fetch from 'node-fetch';
 import { Config } from '@backstage/config';
 
-// Interfaces for your OpenFga API request and response (adjust as needed)
 interface OpenFgaRequest {
   tuple_key: { user: string; relation: string; object: string };
   authorization_model_id: string;
 }
 
 interface OpenFgaResponse {
-  allowed: boolean; // Assuming your response includes an "allowed" property
+  allowed: boolean; 
 }
 
 let permissionResponse: OpenFgaResponse | null = null;
@@ -28,7 +27,7 @@ export async function sendPermissionRequest(entityName: string, action: string, 
 //   const openFgaBaseUrl = config.getOptionalString('openfga.baseUrl');
 //   const openFgaStoreId = config.getOptionalString('openfga.storeId');
 const openFgaBaseUrl = 'http://localhost:8080'
-const openFgaStoreId = '01J1YP1XGYE6AD7ZYENKCV0CD9';
+const openFgaStoreId = '01J20QE9WMGWRRD7FSKJ703JJD';
 
   if (!openFgaBaseUrl || !openFgaStoreId) {
     throw new Error('OpenFGA configuration missing in app-config.yaml');
@@ -36,7 +35,7 @@ const openFgaStoreId = '01J1YP1XGYE6AD7ZYENKCV0CD9';
 
   const url = `${openFgaBaseUrl}/stores/${openFgaStoreId}/check`;
 
-  const relation = action.toLowerCase() === 'delete' ? 'catalog_entity_delete' : 'catalog_entity_read'; // Adjust relation based on action
+  const relation = action.toLowerCase() === 'delete' ? 'catalog_entity_delete' : 'catalog_entity_read'; 
 
   const requestBody: OpenFgaRequest = {
     tuple_key: {
@@ -44,7 +43,7 @@ const openFgaStoreId = '01J1YP1XGYE6AD7ZYENKCV0CD9';
       relation,
       object: `catalog_entity:${entityName}`, 
     },
-    authorization_model_id: '01J1YP4ZSDHJH453RYRVY171AX',
+    authorization_model_id: '01J20QHJVYWEADD27RP36HT38A',
   };
 
   const response = await fetch(url, {

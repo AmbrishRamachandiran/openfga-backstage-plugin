@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Select, MenuItem, FormControl, FormLabel, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { sendPermissionRequest } from '../../client'; // Import the request function
+import { sendPermissionRequest } from '../../client'; 
 
 
-import { useApi } from '@backstage/core-plugin-api';
+import { useApi, identityApiRef } from '@backstage/core-plugin-api';
 import { CATALOG_FILTER_EXISTS, catalogApiRef } from '@backstage/plugin-catalog-react';
 
 const entityOptions = ['acme', 'test', 'entitytest', 'acmetest', 'example-website'];
@@ -17,16 +17,21 @@ const useStyles = makeStyles({
   danger: {
     color: 'red',
   },
+  info: {
+    color: 'blue',
+  },
 });
 
 export const OpenfgaCatalogComponent = () => {
   const classes = useStyles();
   const [entities, setEntities] = useState([]);
+  const [user, setUser] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(entityOptions[0]);
   const [selectedAction, setSelectedAction] = useState(actionOptions[0]);
   const [allowMessage, setAllowMessage] = useState('');
   const [denyMessage, setDenyMessage] = useState('');
-  const api = useApi(catalogApiRef);
+  const catalogApi = useApi(catalogApiRef);
+  const identityApi = useApi(identityApiRef);
 
   const handleEntityChange = (event) => {
     setSelectedEntity(event.target.value);
@@ -38,28 +43,33 @@ export const OpenfgaCatalogComponent = () => {
 
   const fetchEntities = async () => {
     try {
-      const {items} = await api.getEntities({ // Replace with your actual endpoint
+      const {items} = await catalogApi.getEntities({ 
         fields: ['metadata.name'],
+        filter: {
+          'kind=component':
+            CATALOG_FILTER_EXISTS,
+        },
       });
       const entityNames = items.map((entity) => entity.metadata.name);
-      console.log(items)
-      setEntities(entityNames); // Set only entity names
+      const {ownershipEntityRefs} = await identityApi.getBackstageIdentity()
+      setUser(ownershipEntityRefs);
+      setEntities(entityNames); 
     } catch (error) {
       console.error('Error fetching catalog entities:', error);
     }
   };
 
   useEffect(() => {
-    fetchEntities(); // Call fetchEntities on component mount
+    fetchEntities();
   }, []);
 
   const handleActivatePolicy = async () => {
     const response = await sendPermissionRequest(selectedEntity, selectedAction);
     console.log(response)
-    if (response.allowed!=null) {
-      setAllowMessage('Permission Activated!');
+    if (response.allowed) {
+      setAllowMessage(`${user} Has permission to ${selectedAction} the ${selectedEntity}`);
     } else {
-      setDenyMessage('Permission Activation failed!');
+      setDenyMessage(`${user} Don't have permission to ${selectedAction} the ${selectedEntity}`);
     }
     setTimeout(() => {
       setAllowMessage('');
@@ -69,8 +79,11 @@ export const OpenfgaCatalogComponent = () => {
 
   return (
     <Box sx={{ border: 1, borderRadius: 0, p: 2, width: '100%' }}>
+      <Typography className={classes.info} variant="body2" gutterBottom>
+       CURRENT USER : {user}
+      </Typography>
       <Typography variant="h6" gutterBottom>
-        ACTIVATE CATALOG PERMISSION POLICY
+        CATALOG PERMISSION POLICY
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <FormControl fullWidth>
@@ -112,7 +125,7 @@ export const OpenfgaCatalogComponent = () => {
           variant="contained"
           onClick={handleActivatePolicy}
         >
-          Activate Policy
+          Check Policy
         </Button>
       </Box>
       {allowMessage && (
