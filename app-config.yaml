@@ -103,3 +103,10 @@ catalog:
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme-corp.yaml
     #   rules:
     #     - allow: [User, Group]
+    
+permission:
+  enabled: true
+
+openfga:
+  baseUrl: http://localhost:8080  # Replace with your actual OpenFGA base URL
+  storeId: 01J1RXMM5H2H8RPMDCC3EWDWEZ  # Replace with your OpenFGA store ID
