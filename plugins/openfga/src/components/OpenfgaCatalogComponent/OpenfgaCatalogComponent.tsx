@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Select, MenuItem, FormControl, FormLabel, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { sendPermissionRequest } from '../../client'; 
+import { sendPermissionRequest, addPolicy, revokePolicy } from '../../client'; 
 import Alert from '@material-ui/lab/Alert';
 
 import { useApi, identityApiRef } from '@backstage/core-plugin-api';
 import { CATALOG_FILTER_EXISTS, catalogApiRef } from '@backstage/plugin-catalog-react';
 
-const entityOptions = ['acme', 'test', 'entitytest', 'acmetest', 'example-website'];
 const actionOptions = ['Read', 'Delete'];
+const accessTypeOptions = ['owner', 'viewer'];
 
 const useStyles = makeStyles({
   success: {
@@ -24,36 +24,45 @@ const useStyles = makeStyles({
 
 export const OpenfgaCatalogComponent = () => {
   const classes = useStyles();
-  const [entities, setEntities] = useState <any>([]);
-  const [user, setUser] = useState <any>('');
-  const [selectedEntity, setSelectedEntity] = useState(entityOptions[0]);
-  const [selectedAction, setSelectedAction] = useState(actionOptions[0]);
-  const [allowMessage, setAllowMessage] = useState('');
-  const [denyMessage, setDenyMessage] = useState('');
+  const [entities, setEntities] = useState<string[]>([]);
+  const [user, setUser] = useState<string>('');
+  const [selectedEntity, setSelectedEntity] = useState<string>('');
+  const [selectedAction, setSelectedAction] = useState<string>(actionOptions[0]);
+  const [selectedAccessType, setSelectedAccessType] = useState<string>(accessTypeOptions[0]);
+  const [allowMessage, setAllowMessage] = useState<string>('');
+  const [denyMessage, setDenyMessage] = useState<string>('');
+  const [policyMessage, setPolicyMessage] = useState<string>('');
   const catalogApi = useApi(catalogApiRef);
   const identityApi = useApi(identityApiRef);
 
-  const handleEntityChange = (event:any) => {
+  const handleEntityChange = (event: any) => {
     setSelectedEntity(event.target.value);
   };
 
-  const handleActionChange = (event:any) => {
+  const handleActionChange = (event: any) => {
     setSelectedAction(event.target.value);
+  };
+
+  const handleAccessTypeChange = (event: any) => {
+    setSelectedAccessType(event.target.value);
   };
 
   const fetchEntities = async () => {
     try {
-      const {items} = await catalogApi.getEntities({ 
+      const { items } = await catalogApi.getEntities({ 
         fields: ['metadata.name'],
         filter: {
-          'kind=component':
-            CATALOG_FILTER_EXISTS,
+          'kind=component': CATALOG_FILTER_EXISTS,
         },
       });
       const entityNames = items.map((entity) => entity.metadata.name);
-      const {ownershipEntityRefs} = await identityApi.getBackstageIdentity()
+      console.log(entityNames);
+      const { ownershipEntityRefs } = await identityApi.getBackstageIdentity();
       setUser(ownershipEntityRefs);
-      setEntities(entityNames); 
+      setEntities(entityNames);
+      if (entityNames.length > 0) {
+        setSelectedEntity(entityNames[0]);
+      }
     } catch (error) {
       console.error('Error fetching catalog entities:', error);
     }
@@ -76,66 +85,147 @@ export const OpenfgaCatalogComponent = () => {
     }, 5000);
   };
 
+  const handleAddPolicy = async () => {
+    const response = await addPolicy(selectedEntity, selectedAccessType, user);
+    if (response.ok) {
+      setPolicyMessage(selectedAccessType === 'owner' ? 
+        'Added permission for user to read/delete the entity' :
+        'Added permission for user to read not delete the entity');
+    } else {
+      setPolicyMessage(response.message);
+    }
+    setTimeout(() => {
+      setPolicyMessage('');
+    }, 5000);
+  };
+
+  const handleRevokePolicy = async () => {
+    const response = await revokePolicy(selectedEntity, selectedAccessType, user);
+    if (response.ok) {
+      setPolicyMessage(selectedAccessType === 'owner' ? 
+        'Revoked permission for user to read/delete the entity' :
+        'Revoked permission for user to read not delete the entity');
+    } else {
+      setPolicyMessage(response.message);
+    }
+    setTimeout(() => {
+      setPolicyMessage('');
+    }, 5000);
+  };
+
   return (
-    <>
-    <Box sx={{ border: 1, borderRadius: 0, p: 2, bgcolor: 'cyan' }}>
-      <Typography className={classes.info} variant="body2" gutterBottom>
-       {user}
-      </Typography>
-      <Typography variant="h6" gutterBottom>
-        START EXISTING POLICY
-      </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <FormControl>
-          <FormLabel>Select Entity</FormLabel>
-          <Select
-            value={selectedEntity}
-            onChange={handleEntityChange}
-            label="Select Entity"
+    <Box sx={{ border: 1, borderRadius: 0, p: 2, bgcolor: 'cyan', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+      <Box sx={{ width: '45%' }}>
+        <Typography className={classes.info} variant="body2" gutterBottom>
+          {user}
+        </Typography>
+        <Typography variant="h6" gutterBottom>
+          START EXISTING POLICY
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <FormControl>
+            <FormLabel>Select Entity</FormLabel>
+            <Select
+              value={selectedEntity}
+              onChange={handleEntityChange}
+              label="Select Entity"
+            >
+              {entities.map((entityName: string) => (
+                <MenuItem key={entityName} value={entityName}>
+                  {entityName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl>
+            <FormLabel>Select Action</FormLabel>
+            <Select
+              value={selectedAction}
+              onChange={handleActionChange}
+              label="Select Action"
+            >
+              {actionOptions.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+          <Button
+            className={classes.success}
+            variant="contained"
+            onClick={handleActivatePolicy}
           >
-             {entities.map((entityName:any) => (
-              <MenuItem key={entityName} value={entityName}>
-                {entityName}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl>
-          <FormLabel>Select Action</FormLabel>
-          <Select
-            value={selectedAction}
-            onChange={handleActionChange}
-            label="Select Action"
+            Start Policy
+          </Button>
+        </Box>
+        {allowMessage && (
+          <Alert severity="success">{allowMessage}</Alert>
+        )}
+        {denyMessage && (
+          <Alert severity="success">{denyMessage}</Alert>
+        )}
+      </Box>
+
+      <Box sx={{ width: '45%' }}>
+        <Typography className={classes.info} variant="body2" gutterBottom>
+          {user}
+        </Typography>
+        <Typography variant="h6" gutterBottom>
+          MODIFY/ADD POLICY
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <FormControl>
+            <FormLabel>Select Entity</FormLabel>
+            <Select
+              value={selectedEntity}
+              onChange={handleEntityChange}
+              label="Select Entity"
+            >
+              {entities.map((entityName: string) => (
+                <MenuItem key={entityName} value={entityName}>
+                  {entityName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl>
+            <FormLabel>Select Access Type</FormLabel>
+            <Select
+              value={selectedAccessType}
+              onChange={handleAccessTypeChange}
+              label="Select Access Type"
+            >
+              {accessTypeOptions.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+          <Button
+            className={classes.success}
+            variant="contained"
+            onClick={handleAddPolicy}
           >
-            {actionOptions.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+            Add Policy
+          </Button>
+          <Button
+            className={classes.danger}
+            variant="contained"
+            onClick={handleRevokePolicy}
+          >
+            Revoke Policy
+          </Button>
+        </Box>
+        {policyMessage && (
+          <Alert severity={policyMessage.includes('Added') ? 'success' : 'error'}>{policyMessage}</Alert>
+        )}
       </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-        <Button
-          className={classes.success}
-          variant="contained"
-          onClick={handleActivatePolicy}
-        >
-          Start Policy
-        </Button>
-      </Box>
-      {allowMessage && (
-        <Alert severity="success">{allowMessage}</Alert>
-      )}
-      {denyMessage && (
-        <Alert severity="success">{denyMessage}</Alert>
-      )}
     </Box>
-    {/* <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-    <Typography variant="h6" gutterBottom>
-       MODIFY CATALOG PERMISSION POLICY
-      </Typography>
-    </Box> */}
-    </>
   );
 };

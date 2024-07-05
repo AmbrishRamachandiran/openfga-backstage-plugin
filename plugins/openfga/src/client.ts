@@ -1,5 +1,4 @@
 import fetch from 'node-fetch';
-import { Config } from '@backstage/config';
 
 interface OpenFgaRequest {
   tuple_key: { user: string; relation: string; object: string };
@@ -8,6 +7,8 @@ interface OpenFgaRequest {
 
 interface OpenFgaResponse {
   allowed: boolean;
+  ok?: boolean;
+  message?: string;
 }
 
 let permissionResponse: OpenFgaResponse | null = null;
@@ -16,12 +17,11 @@ export function getPermissionResponse(): OpenFgaResponse | null {
   return permissionResponse;
 }
 
-export async function sendPermissionRequest(entityName: string, action: string, userName: any): Promise<OpenFgaResponse> {
-  // const openFgaBaseUrl =  config?.getOptionalString('openfga.baseUrl') 
-  // const openFgaStoreId =  config?.getOptionalString('openfga.storeId')
-  const openFgaBaseUrl = 'http://localhost:8080';
-  const openFgaStoreId = '01J20QE9WMGWRRD7FSKJ703JJD';
+const openFgaBaseUrl = 'http://localhost:8080';
+const openFgaStoreId = '01J20QE9WMGWRRD7FSKJ703JJD';
+const authorizationModelId = '01J20QHJVYWEADD27RP36HT38A';
 
+export async function sendPermissionRequest(entityName: string, action: string, userName: any): Promise<OpenFgaResponse> {
   const url = `${openFgaBaseUrl}/stores/${openFgaStoreId}/check`;
 
   const relation = action.toLowerCase() === 'delete' ? 'catalog_entity_delete' : 'catalog_entity_read';
@@ -32,7 +32,7 @@ export async function sendPermissionRequest(entityName: string, action: string, 
       relation,
       object: `catalog_entity:${entityName}`,
     },
-    authorization_model_id: '01J20QHJVYWEADD27RP36HT38A',
+    authorization_model_id: authorizationModelId,
   };
 
   const response = await fetch(url, {
@@ -47,5 +47,59 @@ export async function sendPermissionRequest(entityName: string, action: string, 
 
   const data: OpenFgaResponse = await response.json();
   permissionResponse = data;
+  return data;
+}
+
+export async function addPolicy(entityName: string, accessType: string, userName: any): Promise<OpenFgaResponse> {
+  const url = `${openFgaBaseUrl}/stores/${openFgaStoreId}/write`;
+
+  const requestBody = {
+    writes: {
+      tuple_keys: [
+        {
+          _description: `Add ${userName} as ${accessType} on catalog_entity:${entityName}`,
+          user: `${userName}`,
+          relation: accessType,
+          object: `catalog_entity:${entityName}`
+        }
+      ]
+    },
+    authorization_model_id: authorizationModelId
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(requestBody),
+  });
+
+  const data: OpenFgaResponse = await response.json();
+  return data;
+}
+
+export async function revokePolicy(entityName: string, accessType: string, userName: any): Promise<OpenFgaResponse> {
+  const url = `${openFgaBaseUrl}/stores/${openFgaStoreId}/write`;
+
+  const requestBody = {
+    deletes: {
+      tuple_keys: [
+        {
+          _description: `Revoke ${userName} as ${accessType} on catalog_entity:${entityName}`,
+          user: `${userName}`,
+          relation: accessType,
+          object: `catalog_entity:${entityName}`
+        }
+      ]
+    },
+    authorization_model_id: authorizationModelId
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(requestBody),
+  });
+
+  const data: OpenFgaResponse = await response.json();
   return data;
 }
