@@ -16,7 +16,7 @@ export function getPermissionResponse(): OpenFgaResponse | null {
   return permissionResponse;
 }
 
-export async function sendPermissionRequest(entityName: string, action: string, userName: string): Promise<OpenFgaResponse> {
+export async function sendPermissionRequest(entityName: string, action: string, userName: any): Promise<OpenFgaResponse> {
   // const openFgaBaseUrl =  config?.getOptionalString('openfga.baseUrl') 
   // const openFgaStoreId =  config?.getOptionalString('openfga.storeId')
   const openFgaBaseUrl = 'http://localhost:8080';

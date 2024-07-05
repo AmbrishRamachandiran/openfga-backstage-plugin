@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Select, MenuItem, FormControl, FormLabel, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { sendPermissionRequest } from '../../client'; 
-
+import Alert from '@material-ui/lab/Alert';
 
 import { useApi, identityApiRef } from '@backstage/core-plugin-api';
 import { CATALOG_FILTER_EXISTS, catalogApiRef } from '@backstage/plugin-catalog-react';
@@ -78,21 +78,20 @@ export const OpenfgaCatalogComponent = () => {
 
   return (
     <>
-    <Box sx={{ border: 1, borderRadius: 0, p: 2, width: '100%' }}>
+    <Box sx={{ border: 1, borderRadius: 0, p: 2, bgcolor: 'cyan' }}>
       <Typography className={classes.info} variant="body2" gutterBottom>
-       CURRENT USER : {user}
+       {user}
       </Typography>
       <Typography variant="h6" gutterBottom>
-        CATALOG PERMISSION POLICY
+        START EXISTING POLICY
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <FormControl fullWidth>
+        <FormControl>
           <FormLabel>Select Entity</FormLabel>
           <Select
             value={selectedEntity}
             onChange={handleEntityChange}
             label="Select Entity"
-            sx={{ width: '100%' }}
           >
              {entities.map((entityName:any) => (
               <MenuItem key={entityName} value={entityName}>
@@ -101,13 +100,12 @@ export const OpenfgaCatalogComponent = () => {
             ))}
           </Select>
         </FormControl>
-        <FormControl fullWidth>
+        <FormControl>
           <FormLabel>Select Action</FormLabel>
           <Select
             value={selectedAction}
             onChange={handleActionChange}
             label="Select Action"
-            sx={{ width: '100%' }}
           >
             {actionOptions.map((option) => (
               <MenuItem key={option} value={option}>
@@ -127,14 +125,10 @@ export const OpenfgaCatalogComponent = () => {
         </Button>
       </Box>
       {allowMessage && (
-        <Typography className={classes.success} variant="body2" sx={{ color: 'green' }}>
-          {allowMessage}
-        </Typography>
+        <Alert severity="success">{allowMessage}</Alert>
       )}
       {denyMessage && (
-        <Typography className={classes.danger} variant="body2" sx={{ color: 'red' }}>
-          {denyMessage}
-        </Typography>
+        <Alert severity="success">{denyMessage}</Alert>
       )}
     </Box>
     {/* <Box sx={{ display: 'flex', flexDirection: 'column' }}>
