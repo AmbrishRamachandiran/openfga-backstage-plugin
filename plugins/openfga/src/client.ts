@@ -7,41 +7,30 @@ interface OpenFgaRequest {
 }
 
 interface OpenFgaResponse {
-  allowed: boolean; 
+  allowed: boolean;
 }
 
 let permissionResponse: OpenFgaResponse | null = null;
 
-/**
- * Makes a call to your OpenFGA API to check permissions.
- * @param entityName The name of the entity for which permission is being checked.
- * @param action The action (e.g., "Read", "Delete") for which permission is being checked.
- * @param config The backend configuration object.
- */
-
 export function getPermissionResponse(): OpenFgaResponse | null {
-    return permissionResponse;
-  }
+  return permissionResponse;
+}
 
 export async function sendPermissionRequest(entityName: string, action: string, config: Config): Promise<OpenFgaResponse> {
-//   const openFgaBaseUrl = config.getOptionalString('openfga.baseUrl');
-//   const openFgaStoreId = config.getOptionalString('openfga.storeId');
-const openFgaBaseUrl = 'http://localhost:8080'
-const openFgaStoreId = '01J20QE9WMGWRRD7FSKJ703JJD';
-
-  if (!openFgaBaseUrl || !openFgaStoreId) {
-    throw new Error('OpenFGA configuration missing in app-config.yaml');
-  }
+  // const openFgaBaseUrl = config.getOptionalString('openfga.baseUrl') || 'http://localhost:8080';
+  // const openFgaStoreId = config.getOptionalString('openfga.storeId') || '01J20QE9WMGWRRD7FSKJ703JJD';
+  const openFgaBaseUrl = 'http://localhost:8080';
+  const openFgaStoreId = '01J20QE9WMGWRRD7FSKJ703JJD';
 
   const url = `${openFgaBaseUrl}/stores/${openFgaStoreId}/check`;
 
-  const relation = action.toLowerCase() === 'delete' ? 'catalog_entity_delete' : 'catalog_entity_read'; 
+  const relation = action.toLowerCase() === 'delete' ? 'catalog_entity_delete' : 'catalog_entity_read';
 
   const requestBody: OpenFgaRequest = {
     tuple_key: {
       user: 'user:guest',
       relation,
-      object: `catalog_entity:${entityName}`, 
+      object: `catalog_entity:${entityName}`,
     },
     authorization_model_id: '01J20QHJVYWEADD27RP36HT38A',
   };
@@ -57,6 +46,6 @@ const openFgaStoreId = '01J20QE9WMGWRRD7FSKJ703JJD';
   }
 
   const data: OpenFgaResponse = await response.json();
-  permissionResponse = data; 
+  permissionResponse = data;
   return data;
 }
