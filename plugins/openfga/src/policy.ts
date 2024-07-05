@@ -41,21 +41,21 @@ import { Config } from '@backstage/config';
 import { sendPermissionRequest } from './client';
 
 export class AOpenFgaCatalogPolicy implements PermissionPolicy {
-  // private config: Config;
-
-  // constructor(config: Config) {
-  //   this.config = config;
-  // }
+  urlConfig: Config;
+  constructor(config: Config) {
+    this.urlConfig = config;
+  }
 
   async handle(
     request: PolicyQuery,
-    user?: BackstageIdentityResponse,
+    user: BackstageIdentityResponse,
   ): Promise<PolicyDecision> {
     // Check if the request is for catalog-entity permissions
     if (isResourcePermission(request.permission, 'catalog-entity')) {
       if (request.permission.name === 'catalog.entity.delete') {
         // Extract the entity name from the permission's parameters if available
         const entityName = 'example-website';
+        const userName = user.identity.ownershipEntityRefs;
 
         if (!entityName) {
           // If entity name is not provided, deny the permission
@@ -67,7 +67,7 @@ export class AOpenFgaCatalogPolicy implements PermissionPolicy {
           const response = await sendPermissionRequest(
             entityName,
             'Delete',
-            // this.config,
+            userName,
           );
 
           // Return ALLOW or DENY based on the response from the OpenFGA API

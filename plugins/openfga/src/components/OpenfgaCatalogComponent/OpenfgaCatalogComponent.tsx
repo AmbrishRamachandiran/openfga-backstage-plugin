@@ -24,8 +24,8 @@ const useStyles = makeStyles({
 
 export const OpenfgaCatalogComponent = () => {
   const classes = useStyles();
-  const [entities, setEntities] = useState([]);
-  const [user, setUser] = useState('');
+  const [entities, setEntities] = useState <any>([]);
+  const [user, setUser] = useState <any>('');
   const [selectedEntity, setSelectedEntity] = useState(entityOptions[0]);
   const [selectedAction, setSelectedAction] = useState(actionOptions[0]);
   const [allowMessage, setAllowMessage] = useState('');
@@ -33,11 +33,11 @@ export const OpenfgaCatalogComponent = () => {
   const catalogApi = useApi(catalogApiRef);
   const identityApi = useApi(identityApiRef);
 
-  const handleEntityChange = (event) => {
+  const handleEntityChange = (event:any) => {
     setSelectedEntity(event.target.value);
   };
 
-  const handleActionChange = (event) => {
+  const handleActionChange = (event:any) => {
     setSelectedAction(event.target.value);
   };
 
@@ -64,8 +64,7 @@ export const OpenfgaCatalogComponent = () => {
   }, []);
 
   const handleActivatePolicy = async () => {
-    const response = await sendPermissionRequest(selectedEntity, selectedAction);
-    console.log(response)
+    const response = await sendPermissionRequest(selectedEntity, selectedAction, user);
     if (response.allowed) {
       setAllowMessage(`${user} Has permission to ${selectedAction} the ${selectedEntity}`);
     } else {
@@ -74,10 +73,11 @@ export const OpenfgaCatalogComponent = () => {
     setTimeout(() => {
       setAllowMessage('');
       setDenyMessage('');
-    }, 3000);
+    }, 5000);
   };
 
   return (
+    <>
     <Box sx={{ border: 1, borderRadius: 0, p: 2, width: '100%' }}>
       <Typography className={classes.info} variant="body2" gutterBottom>
        CURRENT USER : {user}
@@ -89,13 +89,12 @@ export const OpenfgaCatalogComponent = () => {
         <FormControl fullWidth>
           <FormLabel>Select Entity</FormLabel>
           <Select
-            displayEmpty
             value={selectedEntity}
             onChange={handleEntityChange}
             label="Select Entity"
             sx={{ width: '100%' }}
           >
-             {entities.map((entityName) => (
+             {entities.map((entityName:any) => (
               <MenuItem key={entityName} value={entityName}>
                 {entityName}
               </MenuItem>
@@ -105,7 +104,6 @@ export const OpenfgaCatalogComponent = () => {
         <FormControl fullWidth>
           <FormLabel>Select Action</FormLabel>
           <Select
-            displayEmpty
             value={selectedAction}
             onChange={handleActionChange}
             label="Select Action"
@@ -125,7 +123,7 @@ export const OpenfgaCatalogComponent = () => {
           variant="contained"
           onClick={handleActivatePolicy}
         >
-          Check Policy
+          Start Policy
         </Button>
       </Box>
       {allowMessage && (
@@ -139,5 +137,11 @@ export const OpenfgaCatalogComponent = () => {
         </Typography>
       )}
     </Box>
+    {/* <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+    <Typography variant="h6" gutterBottom>
+       MODIFY CATALOG PERMISSION POLICY
+      </Typography>
+    </Box> */}
+    </>
   );
 };

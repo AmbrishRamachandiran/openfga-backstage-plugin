@@ -16,9 +16,9 @@ export function getPermissionResponse(): OpenFgaResponse | null {
   return permissionResponse;
 }
 
-export async function sendPermissionRequest(entityName: string, action: string, config: Config): Promise<OpenFgaResponse> {
-  // const openFgaBaseUrl = config.getOptionalString('openfga.baseUrl') || 'http://localhost:8080';
-  // const openFgaStoreId = config.getOptionalString('openfga.storeId') || '01J20QE9WMGWRRD7FSKJ703JJD';
+export async function sendPermissionRequest(entityName: string, action: string, userName: string): Promise<OpenFgaResponse> {
+  // const openFgaBaseUrl =  config?.getOptionalString('openfga.baseUrl') 
+  // const openFgaStoreId =  config?.getOptionalString('openfga.storeId')
   const openFgaBaseUrl = 'http://localhost:8080';
   const openFgaStoreId = '01J20QE9WMGWRRD7FSKJ703JJD';
 
@@ -28,7 +28,7 @@ export async function sendPermissionRequest(entityName: string, action: string, 
 
   const requestBody: OpenFgaRequest = {
     tuple_key: {
-      user: 'user:guest',
+      user: `${userName}`,
       relation,
       object: `catalog_entity:${entityName}`,
     },
