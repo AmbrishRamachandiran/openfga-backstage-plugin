@@ -51,9 +51,9 @@ export const OpenfgaCatalogComponent = () => {
     try {
       const { items } = await catalogApi.getEntities({ 
         fields: ['metadata.name'],
-        // filter: {
-        //   'kind=component': CATALOG_FILTER_EXISTS,
-        // },
+        filter: {
+          'kind=component': CATALOG_FILTER_EXISTS,
+        },
       });
       const entityNames = items.map((entity) => entity.metadata.name);
       const { ownershipEntityRefs } = await identityApi.getBackstageIdentity();
@@ -159,7 +159,7 @@ export const OpenfgaCatalogComponent = () => {
             variant="contained"
             onClick={handleActivatePolicy}
           >
-            Start Policy
+            Apply Policy
           </Button>
         </Box>
         {allowMessage && (

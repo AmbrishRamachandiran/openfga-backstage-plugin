@@ -24,7 +24,7 @@ export class AOpenFgaCatalogPolicy implements PermissionPolicy {
     // Check if the request is for catalog-entity permissions
     if (isResourcePermission(request.permission, 'catalog-entity')) {
       if (request.permission.name === 'catalog.entity.delete') {
-        // Extract the entity name from the permission's parameters if available
+        // Currently entityname is hardcoded, Load Entity based on the entity selection if possible
         const entityName = 'example-website';
         const userName = user.identity.ownershipEntityRefs;
 
