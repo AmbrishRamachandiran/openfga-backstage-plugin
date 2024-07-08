@@ -175,4 +175,43 @@ EXAMPLE RESPONSE BODY:
 
 ```
 
+## USING OPENFGA FRONT END PLUGIN
+
+Before start accessing openFGA plugin in ui make sure you have updated following values in [client.ts] (https://github.com/AmbrishRamachandiran/openfga-backstage-plugin/blob/master/plugins/openfga/src/client.ts)
+
+ ![image](https://github.com/AmbrishRamachandiran/openfga-backstage-plugin/assets/133481507/f20eeb43-c18f-48a5-96ba-70a3e216270c)
+
+
+HOME SCREEN:
+
+![image](https://github.com/AmbrishRamachandiran/openfga-backstage-plugin/assets/133481507/adabd02b-dfbb-4560-af61-7f7c9a56b4bb)
+
+
+BEFORE APPLYING POLICY:
+
+A guest user not able to unregister a entity
+
+![image](https://github.com/AmbrishRamachandiran/openfga-backstage-plugin/assets/133481507/2489eace-9c3c-4e04-9093-eb4001c7ea21)
+
+ADD POLICY:
+
+![image](https://github.com/AmbrishRamachandiran/openfga-backstage-plugin/assets/133481507/6020f9fa-a19f-48c8-b1a3-c895ba2becc9)
+
+APPLY POLICY:
+
+![image](https://github.com/AmbrishRamachandiran/openfga-backstage-plugin/assets/133481507/d9ae4f43-b648-4e80-a9a2-9c072f94d781)
+
+AFTER APPLYING POLICY:
+
+A guest user able to unregister a entity
+
+![image](https://github.com/AmbrishRamachandiran/openfga-backstage-plugin/assets/133481507/20803b0c-4716-4780-9327-912d4a67c2e9)
+
+
+REVOKE POLICY:
+
+![image](https://github.com/AmbrishRamachandiran/openfga-backstage-plugin/assets/133481507/36aacc18-9615-4da9-8189-be7b4c9d3750)
+
+
+
 
