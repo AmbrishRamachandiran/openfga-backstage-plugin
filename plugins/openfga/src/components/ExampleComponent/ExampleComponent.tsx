@@ -1,12 +1,10 @@
 import React from 'react';
-import { Typography, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import {
   Header,
   Page,
-  Content,
-  HeaderLabel,
+  Content
 } from '@backstage/core-components';
-// import { ExampleFetchComponent } from '../ExampleFetchComponent';
 import { OpenfgaCatalogComponent } from '../OpenfgaCatalogComponent';
 
 export const ExampleComponent = () => (
