@@ -20,6 +20,18 @@ const useStyles = makeStyles({
   info: {
     color: 'blue',
   },
+  button: {
+    width: '150px',
+    height: '40px',
+  },
+  box: {
+    width: '45%',
+    minHeight: '300px',
+  },
+  alert: {
+    minHeight: '100px',
+    maxWidth : '30px',
+  },
 });
 
 export const OpenfgaCatalogComponent = () => {
@@ -115,8 +127,8 @@ export const OpenfgaCatalogComponent = () => {
   };
 
   return (
-    <Box sx={{ border: 1, borderRadius: 0, p: 2, bgcolor: 'cyan', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-      <Box sx={{ width: '45%' }}>
+    <Box sx={{ border: 1, borderRadius: 0, p: 2, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 2 }}>
+      <Box className={classes.box}>
         <Typography className={classes.info} variant="body2" gutterBottom>
           {user}
         </Typography>
@@ -155,7 +167,7 @@ export const OpenfgaCatalogComponent = () => {
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
           <Button
-            className={classes.success}
+            className={`${classes.success} ${classes.button}`}
             variant="contained"
             onClick={handleActivatePolicy}
           >
@@ -163,14 +175,14 @@ export const OpenfgaCatalogComponent = () => {
           </Button>
         </Box>
         {allowMessage && (
-          <Alert severity="success">{allowMessage}</Alert>
+          <Alert severity="success" className={classes.alert}>{allowMessage}</Alert>
         )}
         {denyMessage && (
-          <Alert severity="success">{denyMessage}</Alert>
+          <Alert severity="success" className={classes.alert}>{denyMessage}</Alert>
         )}
       </Box>
 
-      <Box sx={{ width: '45%' }}>
+      <Box className={classes.box}>
         <Typography className={classes.info} variant="body2" gutterBottom>
           {user}
         </Typography>
@@ -207,16 +219,16 @@ export const OpenfgaCatalogComponent = () => {
             </Select>
           </FormControl>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2, gap: 1 }}>
           <Button
-            className={classes.success}
+            className={`${classes.success} ${classes.button}`}
             variant="contained"
             onClick={handleAddPolicy}
           >
             Add Policy
           </Button>
           <Button
-            className={classes.danger}
+            className={`${classes.danger} ${classes.button}`}
             variant="contained"
             onClick={handleRevokePolicy}
           >
@@ -224,7 +236,7 @@ export const OpenfgaCatalogComponent = () => {
           </Button>
         </Box>
         {policyMessage && (
-          <Alert severity={policyMessage.includes('Added') ? 'success' : 'error'}>{policyMessage}</Alert>
+          <Alert severity={policyMessage.includes('Added') ? 'success' : 'error'} className={classes.alert}>{policyMessage}</Alert>
         )}
       </Box>
     </Box>
