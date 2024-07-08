@@ -8,7 +8,7 @@ interface OpenFgaRequest {
 interface OpenFgaResponse {
   allowed: boolean;
   ok?: boolean;
-  message?: string;
+  message: string;
 }
 
 let permissionResponse: OpenFgaResponse | null = null;

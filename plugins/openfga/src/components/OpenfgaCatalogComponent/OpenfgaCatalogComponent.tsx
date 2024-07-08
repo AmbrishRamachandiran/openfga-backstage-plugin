@@ -21,7 +21,7 @@ const useStyles = makeStyles({
     color: 'blue',
   },
   button: {
-    width: '150px',
+    width: '210px',
     height: '40px',
   },
   box: {
@@ -37,7 +37,7 @@ const useStyles = makeStyles({
 export const OpenfgaCatalogComponent = () => {
   const classes = useStyles();
   const [entities, setEntities] = useState<string[]>([]);
-  const [user, setUser] = useState<string>('');
+  const [user, setUser] = useState<string[]>([]);
   const [selectedEntity, setSelectedEntity] = useState<string>('');
   const [selectedAction, setSelectedAction] = useState<string>(actionOptions[0]);
   const [selectedAccessType, setSelectedAccessType] = useState<string>(accessTypeOptions[0]);
@@ -95,7 +95,7 @@ export const OpenfgaCatalogComponent = () => {
     setTimeout(() => {
       setAllowMessage('');
       setDenyMessage('');
-    }, 5000);
+    }, 7000);
   };
 
   const handleAddPolicy = async () => {
@@ -109,7 +109,7 @@ export const OpenfgaCatalogComponent = () => {
     }
     setTimeout(() => {
       setPolicyMessage('');
-    }, 5000);
+    }, 7000);
   };
 
   const handleRevokePolicy = async () => {
@@ -123,7 +123,7 @@ export const OpenfgaCatalogComponent = () => {
     }
     setTimeout(() => {
       setPolicyMessage('');
-    }, 5000);
+    }, 7000);
   };
 
   return (
