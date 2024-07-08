@@ -1,10 +1,3 @@
-# [Backstage](https://backstage.io)
+# Welcome to the OPENFGA Plugins Repository for Backstage!
 
-This is your newly scaffolded Backstage App, Good Luck!
-
-To start the app, run:
-
-```sh
-yarn install
-yarn dev
-```
+This repository contains a collection of plugins for [Backstage](https://backstage.io) that integrate with [OPENFGA](https://openfga.dev/docs/fga).
