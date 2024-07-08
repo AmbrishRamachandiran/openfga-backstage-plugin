@@ -51,12 +51,11 @@ export const OpenfgaCatalogComponent = () => {
     try {
       const { items } = await catalogApi.getEntities({ 
         fields: ['metadata.name'],
-        filter: {
-          'kind=component': CATALOG_FILTER_EXISTS,
-        },
+        // filter: {
+        //   'kind=component': CATALOG_FILTER_EXISTS,
+        // },
       });
       const entityNames = items.map((entity) => entity.metadata.name);
-      console.log(entityNames);
       const { ownershipEntityRefs } = await identityApi.getBackstageIdentity();
       setUser(ownershipEntityRefs);
       setEntities(entityNames);
@@ -77,7 +76,9 @@ export const OpenfgaCatalogComponent = () => {
     if (response.allowed) {
       setAllowMessage(`${user} Has permission to ${selectedAction} the ${selectedEntity}`);
     } else {
-      setDenyMessage(`${user} Don't have permission to ${selectedAction} the ${selectedEntity}`);
+      setDenyMessage(selectedAction === 'Read' ? 
+      `${user} have permission only to ${selectedAction} the ${selectedEntity}` :
+      `${user} Don't have permission to ${selectedAction} the ${selectedEntity}`);
     }
     setTimeout(() => {
       setAllowMessage('');
@@ -87,7 +88,7 @@ export const OpenfgaCatalogComponent = () => {
 
   const handleAddPolicy = async () => {
     const response = await addPolicy(selectedEntity, selectedAccessType, user);
-    if (response.ok) {
+    if (Object.keys(response).length === 0 && response.constructor === Object){
       setPolicyMessage(selectedAccessType === 'owner' ? 
         'Added permission for user to read/delete the entity' :
         'Added permission for user to read not delete the entity');
@@ -101,7 +102,7 @@ export const OpenfgaCatalogComponent = () => {
 
   const handleRevokePolicy = async () => {
     const response = await revokePolicy(selectedEntity, selectedAccessType, user);
-    if (response.ok) {
+    if (Object.keys(response).length === 0 && response.constructor === Object){
       setPolicyMessage(selectedAccessType === 'owner' ? 
         'Revoked permission for user to read/delete the entity' :
         'Revoked permission for user to read not delete the entity');
