@@ -16,7 +16,7 @@ This repository contains a collection of plugins for [Backstage](https://backsta
 
 ## Pre-requisites
 
-- You have a Backstage instance set up and running.
+- Make sure you have forked this repo and your backstage instance running.
 - You have deployed OPENFGA, kindly see how to do that [here](https://github.com/openfga/openfga).
 - This plugin also requires and assumes that you have at least setup the permission framework (without any policies) as outlined here [Backstage Permissions Docs](https://backstage.io/docs/permissions/overview) as it of course relies on the permissions framework to be there and set up.
 
