@@ -57,6 +57,14 @@ REQUEST BODY:
   "name": "backstage"
 }
 
+EXAMPLE RESPONSE BODY:
+{
+"id": "01J289TDYQ1WH9RTMQD46K7ANC",
+"name": "backstage",
+"created_at": "2024-07-08T04:32:20.951446991Z",
+"updated_at": "2024-07-08T04:32:20.951446991Z"
+}
+
 ``` 
 
 
@@ -69,5 +77,102 @@ URL : http://localhost:8080/stores
 
 EXAMPLE RESPONSE BODY:
 
-{"stores":[{"id":"01J289TDYQ1WH9RTMQD46K7ANC", "name":"backstage", "created_at":"2024-07-08T04:32:20.951446991Z", "updated_at":"2024-07-08T04:32:20.951446991Z", "deleted_at":null}], "continuation_token":""}
+{
+"stores":[
+{
+"id": "01J289TDYQ1WH9RTMQD46K7ANC",
+"name": "backstage",
+"created_at": "2024-07-08T04:32:20.951446991Z",
+"updated_at": "2024-07-08T04:32:20.951446991Z",
+"deleted_at": null
+}
+],
+"continuation_token": ""
+}
 ```
+
+STEP 3 : ADDING AUTHORIZATION MODEL FOR CATALOG DELETE
+
+```
+REQUEST TYPE : POST
+
+URL: http://localhost:8080/stores/{store_id}/authorization-models
+
+REQUEST BODY:
+
+{
+  "schema_version": "1.1",
+  "type_definitions": [
+    {
+      "type": "user",
+      "relations": {},
+      "metadata": null
+    },
+    {
+      "type": "catalog_entity",
+      "relations": {
+        "owner": {
+          "this": {}
+        },
+        "viewer": {
+          "this": {}
+        },
+        "catalog_entity_read": {
+          "union": {
+            "child": [
+              {
+                "computedUserset": {
+                  "relation": "viewer"
+                }
+              },
+              {
+                "computedUserset": {
+                  "relation": "owner"
+                }
+              }
+            ]
+          }
+        },
+        "catalog_entity_delete": {
+          "computedUserset": {
+            "relation": "owner"
+          }
+        }
+      },
+      "metadata": {
+        "relations": {
+          "owner": {
+            "directly_related_user_types": [
+              {
+                "type": "user"
+              }
+            ]
+          },
+          "viewer": {
+            "directly_related_user_types": [
+              {
+                "type": "user"
+              }
+            ]
+          },
+          "catalog_entity_read": {
+            "directly_related_user_types": []
+          },
+          "catalog_entity_delete": {
+            "directly_related_user_types": []
+          }
+        }
+      }
+    }
+  ]
+}
+
+EXAMPLE RESPONSE BODY:
+
+{
+"authorization_model_id": "01J289WKKTE286M800HJBGYX5K"
+}
+
+```
+
+
