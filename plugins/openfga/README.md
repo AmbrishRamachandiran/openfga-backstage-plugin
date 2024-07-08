@@ -19,8 +19,8 @@ Lets take a scenario a role based access for backstage catalog delete/ungersiter
 
 Rules:
 
-1.A user who have OWNER access can read and delete the entity 
-2.A user who have VIEWER access can only read the entity not delete the entity
+- A user who have OWNER access can read and delete the entity 
+- A user who have VIEWER access can only read the entity not delete the entity
 
 ## CREATE A MODEL IN OPENFGA PLAYGROUND
 
@@ -35,4 +35,39 @@ OpenFGA is available on Dockerhub, so you can quickly start it using the in-memo
 ```
 docker pull openfga/openfga
 docker run -p 8080:8080 -p 3000:3000 openfga/openfga run
+```
+
+
+## ACCESSING OPENFGA FEATURES 
+
+OPENFGA Model and Features can be accessable with many ways please [visit](https://openfga.dev/docs/getting-started/create-store)
+
+In this following example OPENFGA API is used 
+
+STEP 1: CREATE A STORE 
+
+```
+REQUEST TYPE : POST 
+
+URL :  http://localhost:8080/stores
+
+REQUEST BODY:
+
+{
+  "name": "backstage"
+}
+
+``` 
+
+
+STEP 2 : GET A STORE 
+
+```
+REQUEST TYPE : GET
+
+URL : http://localhost:8080/stores
+
+EXAMPLE RESPONSE BODY:
+
+{"stores":[{"id":"01J289TDYQ1WH9RTMQD46K7ANC", "name":"backstage", "created_at":"2024-07-08T04:32:20.951446991Z", "updated_at":"2024-07-08T04:32:20.951446991Z", "deleted_at":null}], "continuation_token":""}
 ```
