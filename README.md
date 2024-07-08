@@ -30,3 +30,5 @@ This plugin wraps around the Backstage Permission Framework and uses the OPENFGA
 - The Permission Framework backend will then forward the request to OPENFGA with the permission and identity information.
 - OPENFGA will evaluate the the information against the policy and return a decision.
 
+
+FOR MORE INFORMATION AND SETUP PLEASE VISIT PLUGIN DOCS [OPENFGA PLUGIN] (https://github.com/AmbrishRamachandiran/openfga-backstage-plugin/blob/master/plugins/openfga/README.md)
