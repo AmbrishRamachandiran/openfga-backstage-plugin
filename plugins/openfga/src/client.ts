@@ -18,8 +18,8 @@ export function getPermissionResponse(): OpenFgaResponse | null {
 }
 
 const openFgaBaseUrl = 'http://localhost:8080';
-const openFgaStoreId = '01J289TDYQ1WH9RTMQD46K7ANC';
-const authorizationModelId = '01J289WKKTE286M800HJBGYX5K';
+const openFgaStoreId = '01J3M3X69VY9CH2Q93NQ87EKKV';
+const authorizationModelId = '01J3M3Y90RZEHBW6S9HTJDKH7N';
 
 export async function sendPermissionRequest(entityName: string, action: string, userName: any): Promise<OpenFgaResponse> {
   const url = `${openFgaBaseUrl}/stores/${openFgaStoreId}/check`;
