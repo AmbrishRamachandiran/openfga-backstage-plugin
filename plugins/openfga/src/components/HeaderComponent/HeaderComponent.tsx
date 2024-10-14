@@ -7,7 +7,7 @@ import {
 } from '@backstage/core-components';
 import { OpenfgaCatalogComponent } from '../OpenfgaCatalogComponent';
 
-export const ExampleComponent = () => (
+export const HeaderComponent = () => (
   <Page themeId="tool">
     <Header title="OpenFGA Permission">
     </Header>

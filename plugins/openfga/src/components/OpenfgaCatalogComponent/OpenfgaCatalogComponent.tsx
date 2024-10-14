@@ -90,7 +90,7 @@ export const OpenfgaCatalogComponent = () => {
     } else {
       setDenyMessage(selectedAction === 'Read' ? 
       `${user} have permission only to ${selectedAction} the ${selectedEntity}` :
-      `${user} Don't have permission to ${selectedAction} the ${selectedEntity}`);
+      `${user} Does not have permission to ${selectedAction} the ${selectedEntity}`);
     }
     setTimeout(() => {
       setAllowMessage('');
@@ -171,15 +171,26 @@ export const OpenfgaCatalogComponent = () => {
             variant="contained"
             onClick={handleActivatePolicy}
           >
-            Apply Policy
+            Check Policy
           </Button>
         </Box>
         {allowMessage && (
-          <Alert severity="success" className={classes.alert}>{allowMessage}</Alert>
-        )}
-        {denyMessage && (
-          <Alert severity="success" className={classes.alert}>{denyMessage}</Alert>
-        )}
+  <Alert severity="success" className={classes.alert}>{allowMessage}</Alert>
+)}
+      {denyMessage && (
+        <>
+          {denyMessage.includes('Read') && (
+            <Alert severity="success" className={classes.alert}>
+             `{user} have permission only to {selectedAction} the {selectedEntity}`
+            </Alert>
+          )}
+          {denyMessage.includes('Delete') && (
+            <Alert severity="error" className={classes.alert}>
+              {user} Does not have permission to {selectedAction} the {selectedEntity}
+            </Alert>
+          )}
+        </>
+      )}
       </Box>
 
       <Box className={classes.box}>

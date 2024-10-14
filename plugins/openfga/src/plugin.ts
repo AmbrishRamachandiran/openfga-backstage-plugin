@@ -16,7 +16,7 @@ export const OpenfgaPage = openfgaPlugin.provide(
   createRoutableExtension({
     name: 'OpenfgaPage',
     component: () =>
-      import('./components/ExampleComponent').then(m => m.ExampleComponent),
+      import('./components/HeaderComponent').then(m => m.HeaderComponent),
     mountPoint: rootRouteRef,
   }),
 );
