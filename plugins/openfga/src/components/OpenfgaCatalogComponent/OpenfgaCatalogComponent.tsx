@@ -181,7 +181,7 @@ export const OpenfgaCatalogComponent = () => {
         <>
           {denyMessage.includes('Read') && (
             <Alert severity="success" className={classes.alert}>
-             `{user} have permission only to {selectedAction} the {selectedEntity}`
+             {user} have permission only to {selectedAction} the {selectedEntity}
             </Alert>
           )}
           {denyMessage.includes('Delete') && (
